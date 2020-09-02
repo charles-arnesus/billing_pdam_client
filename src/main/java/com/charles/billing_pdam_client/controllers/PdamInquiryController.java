@@ -1,26 +1,34 @@
 package com.charles.billing_pdam_client.controllers;
 
+import com.charles.billing_pdam_client.models.Bill;
 import com.charles.billing_pdam_client.models.InquiryRequest;
 import com.charles.billing_pdam_client.models.InquiryResponse;
+import com.charles.billing_pdam_client.repositories.BillRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
-import java.time.Month;
-
 @RestController
 @RequestMapping("/api/inquiry")
 public class PdamInquiryController {
 
+    @Autowired
+    private BillRepository billRepository;
+
     @PostMapping("/")
     public InquiryResponse doInquiry(@RequestBody InquiryRequest inquiryRequest) {
+        Bill bill = billRepository.findFirstByBillerIdAndCustomerAccountIdAndStatusOrderByDueDate(
+                inquiryRequest.getBillerId(),
+                inquiryRequest.getUserInput(),
+                "available"
+        );
         InquiryResponse response = new InquiryResponse();
-        response.setBillerId(inquiryRequest.getBillerId());
-        response.setCustomerAccountId(inquiryRequest.getUserInput());
-        response.setDueDate(LocalDate.of(2020, Month.DECEMBER, 20));
-        response.setTotalAmount(50000.00);
+        response.setBillerId(bill.getBillerId());
+        response.setCustomerAccountId(bill.getCustomerAccountId());
+        response.setDueDate(bill.getDueDate());
+        response.setTotalAmount(bill.getTotalAmount());
         return response;
     }
 
