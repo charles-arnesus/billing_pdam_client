@@ -11,10 +11,10 @@ import java.time.LocalDate;
 import java.time.Month;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/inquiry")
 public class PdamInquiryController {
 
-    @PostMapping("/inquiry")
+    @PostMapping("/")
     public InquiryResponse doInquiry(@RequestBody InquiryRequest inquiryRequest) {
         InquiryResponse response = new InquiryResponse();
         response.setBillerId(inquiryRequest.getBillerId());
